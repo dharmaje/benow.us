@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dharma Jay</title>
-<meta name="description" content="Be now. Remember the past, choose your future, be in the present. Now is the only time you have, and it is timeless.">
+<meta name="description" content="Be now. Reflections on presence, choice, and perception — the writing of Dharma Jay. Now is the only time you have, and it is timeless.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="alternate icon" href="favicon.ico">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -16,147 +16,630 @@
     --bone:#EAF1F2;
     --bone-dim:#9DB2B8;
     --aqua:#7FD8DA;
+    --aqua-deep:#5FC7C9;
     --hair:rgba(220,231,234,0.12);
+    --hair-soft:rgba(220,231,234,0.06);
+    --accent-soft:rgba(127,216,218,0.13);
+    --accent-softer:rgba(127,216,218,0.07);
+    --accent-line:rgba(127,216,218,0.40);
+
+    --sans:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    --serif:"Fraunces",Georgia,serif;
+    --wordmark:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    --nav-w:286px;
+    --topbar-h:60px;
+    color-scheme:dark;
   }
   *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
+  html{background:var(--ink);scroll-behavior:smooth}
   body{
     margin:0;
-    font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-    background:var(--ink);
+    font-family:var(--sans);
+    font-size:18px;
+    line-height:1.65;
+    background:transparent;
     color:var(--bone);
     -webkit-font-smoothing:antialiased;
     text-rendering:optimizeLegibility;
   }
+  a{color:inherit}
 
-  /* ---------------- Hero ---------------- */
-  .hero{
-    position:relative;
-    min-height:100svh;
-    display:flex;flex-direction:column;justify-content:flex-start;
-    padding:clamp(72px,17vh,200px) clamp(24px,6vw,72px) clamp(48px,10vh,120px);
-    overflow:hidden;
-    isolation:isolate;
-  }
-  .hero-bg{
-    position:absolute;inset:0;z-index:-2;
+  /* ---------------- Fixed waterfall backdrop (kept from the original) --------- */
+  .page-bg{
+    position:fixed;inset:0;z-index:-1;
     background:url("waterfall.jpg") center 42%/cover no-repeat;
     transform:scale(1.06);
     animation:kenburns 34s ease-in-out infinite alternate;
     will-change:transform;
   }
   @keyframes kenburns{from{transform:scale(1.06)}to{transform:scale(1.18)}}
+
+  .skip{
+    position:absolute;left:-9999px;top:0;z-index:50;
+    background:var(--aqua);color:var(--ink-deep);padding:10px 16px;border-radius:0 0 8px 0;
+    font-weight:700;text-decoration:none;
+  }
+  .skip:focus{left:0}
+
+  /* ---------------- Left nav (the jason.epel.us pattern, Dharma Jay skin) ------ */
+  .nav{
+    position:fixed;top:0;left:0;width:var(--nav-w);height:100vh;
+    display:flex;flex-direction:column;
+    padding:34px 24px 20px;z-index:20;
+    background:linear-gradient(180deg, rgba(8,24,33,.84) 0%, rgba(8,24,33,.93) 100%);
+    backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);
+    border-right:1px solid var(--hair);
+  }
+  .brand{margin-bottom:26px;flex:0 0 auto}
+  .brand .mark{
+    display:inline-block;text-decoration:none;
+    font-family:var(--wordmark);font-weight:600;
+    font-size:23px;line-height:1;letter-spacing:0.16em;text-transform:uppercase;
+    color:#FCFEFE;
+  }
+  .brand .tag{
+    margin-top:13px;font-size:13px;line-height:1.55;color:var(--bone-dim);
+    max-width:220px;letter-spacing:0.2px;
+  }
+  .brand .tag em{font-family:var(--serif);font-style:italic;font-weight:500;color:var(--aqua)}
+
+  .menu{
+    list-style:none;margin:0;padding:2px 0 8px;overflow-y:auto;flex:1 1 auto;
+    scrollbar-width:thin;scrollbar-color:var(--hair) transparent;
+  }
+  .menu::-webkit-scrollbar{width:8px}
+  .menu::-webkit-scrollbar-thumb{background:var(--hair);border-radius:8px}
+  .nav-top > button{
+    all:unset;box-sizing:border-box;cursor:pointer;display:block;width:100%;
+    padding:11px 12px;border-radius:8px;border-left:3px solid transparent;
+    color:var(--bone);font-size:15.5px;letter-spacing:0.2px;
+    transition:background .25s ease,color .25s ease,border-color .25s ease;
+  }
+  .nav-top > button:hover{background:var(--accent-softer)}
+  .nav-top > button:focus-visible{outline:2px solid var(--aqua);outline-offset:2px}
+  .nav-top > button[aria-current]{
+    background:var(--accent-soft);border-left-color:var(--aqua);
+    color:#FCFEFE;font-weight:600;
+  }
+
+  .nav-sub{
+    list-style:none;margin:2px 0 6px;padding:0 0 0 4px;
+    max-height:0;overflow:hidden;opacity:0;
+    transition:max-height .35s ease,opacity .25s ease;
+  }
+  .nav-top.expanded .nav-sub{max-height:640px;opacity:1}
+  .nav-sub > li > button{
+    all:unset;box-sizing:border-box;cursor:pointer;display:block;width:100%;
+    padding:7px 12px 7px 16px;margin:1px 0;border-radius:7px;
+    border-left:2px solid var(--hair-soft);
+    color:var(--bone-dim);font-size:14px;line-height:1.4;letter-spacing:0.2px;
+    transition:background .2s ease,color .2s ease,border-color .2s ease;
+  }
+  .nav-sub > li > button:hover{background:var(--accent-softer);color:var(--bone)}
+  .nav-sub > li > button:focus-visible{outline:2px solid var(--aqua);outline-offset:2px}
+  .nav-sub > li > button[aria-current]{
+    color:#FCFEFE;border-left-color:var(--aqua);
+    background:var(--accent-soft);font-weight:600;
+  }
+
+  .nav .foot{
+    flex:0 0 auto;margin-top:14px;padding-top:16px;border-top:1px solid var(--hair);
+    display:flex;align-items:center;gap:10px;
+    font-size:11.5px;letter-spacing:0.28em;text-transform:uppercase;color:var(--bone-dim);
+  }
+  .nav .foot a{text-decoration:none;transition:color .2s ease}
+  .nav .foot a:hover{color:var(--aqua)}
+
+  /* ---------------- Main scrolling column ------------------------------------- */
+  .main{margin-left:var(--nav-w)}
+  .sect{scroll-margin-top:32px}
+  .sub{scroll-margin-top:32px}
+
+  /* Hero — the original look, now the first section of the content column */
+  .hero{
+    position:relative;
+    min-height:100svh;
+    display:flex;flex-direction:column;justify-content:flex-start;
+    padding:clamp(72px,17vh,200px) clamp(24px,6vw,88px) clamp(48px,10vh,120px);
+    overflow:hidden;isolation:isolate;
+  }
   .hero-scrim{
     position:absolute;inset:0;z-index:-1;
     background:
       radial-gradient(120% 90% at 50% 8%, rgba(8,24,33,0) 0%, rgba(8,24,33,.28) 60%, rgba(8,24,33,.55) 100%),
-      linear-gradient(180deg, rgba(8,24,33,.62) 0%, rgba(8,24,33,.30) 30%, rgba(8,24,33,.42) 62%, var(--ink) 100%);
+      linear-gradient(180deg, rgba(8,24,33,.60) 0%, rgba(8,24,33,.28) 30%, rgba(8,24,33,.42) 62%, var(--ink) 100%);
   }
   .hero-inner{max-width:820px}
   .name{
     margin:0;
-    font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-weight:600;
-    font-size:clamp(46px,10vw,116px);
-    line-height:0.98;
-    letter-spacing:0.14em;
-    text-transform:uppercase;
-    color:#FCFEFE;
+    font-family:var(--wordmark);font-weight:600;
+    font-size:clamp(46px,9vw,112px);line-height:0.98;letter-spacing:0.14em;
+    text-transform:uppercase;color:#FCFEFE;
     text-shadow:0 2px 34px rgba(0,0,0,.5),0 1px 4px rgba(0,0,0,.4);
   }
   .narrative{
-    margin:clamp(24px,4vh,40px) 0 0;
-    max-width:42ch;
-    font-size:clamp(18px,2.3vw,24px);
-    line-height:1.62;
-    color:var(--bone);
+    margin:clamp(24px,4vh,40px) 0 0;max-width:42ch;
+    font-size:clamp(18px,2.3vw,24px);line-height:1.62;color:var(--bone);
     text-shadow:0 1px 18px rgba(0,0,0,.55);
   }
-  .narrative .accent{
-    font-family:"Fraunces",Georgia,serif;
-    font-style:italic;font-weight:500;
-    color:var(--aqua);
-  }
+  .narrative .accent{font-family:var(--serif);font-style:italic;font-weight:500;color:var(--aqua)}
   .scroll-cue{
     position:absolute;left:50%;bottom:clamp(20px,4vh,40px);transform:translateX(-50%);
     z-index:1;display:grid;place-items:center;
     width:44px;height:44px;border-radius:50%;
     color:var(--bone);text-decoration:none;
     border:1px solid var(--hair);background:rgba(8,24,33,.28);
-    backdrop-filter:blur(4px);
-    animation:bob 2.4s ease-in-out infinite;
+    backdrop-filter:blur(4px);animation:bob 2.4s ease-in-out infinite;
     transition:background .2s ease,border-color .2s ease;
   }
   .scroll-cue:hover{background:rgba(127,216,218,.16);border-color:rgba(127,216,218,.4)}
   .scroll-cue svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2}
   @keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,7px)}}
 
-  /* ---------------- About ---------------- */
-  .about{
-    background:var(--ink);
-    padding:clamp(72px,14vh,160px) clamp(24px,6vw,72px) clamp(88px,16vh,180px);
+  /* Hero signature — right-justified in the lower-right of the hero */
+  .hero-sign{
+    position:absolute;z-index:1;
+    right:clamp(24px,6vw,88px);top:52%;
+    text-align:right;text-shadow:0 1px 18px rgba(0,0,0,.55);
   }
-  .about-inner{max-width:720px;margin:0 auto}
-  .eyebrow{
-    margin:0 0 26px;
-    font-weight:600;font-size:12.5px;letter-spacing:0.28em;text-transform:uppercase;
-    color:var(--aqua);
+  .hero-sign .sig-name{
+    margin:0;font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:clamp(20px,2.6vw,28px);line-height:1.1;letter-spacing:normal;color:var(--aqua);
   }
-  .lead{
-    margin:0 0 1.15em;
-    font-family:"Fraunces",Georgia,serif;font-weight:500;font-style:normal;
-    font-size:clamp(24px,3.6vw,36px);line-height:1.28;letter-spacing:.2px;
-    color:#F4F9F9;
+  .hero-sign .sig-mail{margin:11px 0 0}
+  .hero-sign .sig-mail a{
+    color:#EAF1F2;font-size:clamp(13px,1.4vw,15px);letter-spacing:.02em;text-decoration:none;
+    border-bottom:1px solid var(--accent-line);padding-bottom:1px;
+    transition:color .2s ease,border-color .2s ease;
   }
-  .prose{font-size:clamp(17px,1.5vw,19px);line-height:1.85;color:var(--bone);opacity:.9}
-  .prose p{margin:0}
-  .prose em{
-    font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:500;
-    color:var(--aqua);font-size:1.06em;
+  .hero-sign .sig-mail a:hover{color:var(--aqua);border-bottom-color:var(--aqua)}
+  @media (max-width:560px){
+    .hero-sign{top:auto;bottom:clamp(96px,18vh,160px)}
   }
 
-  /* ---------------- Footer ---------------- */
-  .foot{
-    padding:26px clamp(24px,6vw,72px) 40px;text-align:center;
+  /* Reading sections — solid ink over the fixed backdrop */
+  .band{
+    position:relative;background:var(--ink);
+    padding:clamp(64px,12vh,140px) clamp(24px,6vw,88px);
+  }
+  .band + .band{border-top:1px solid var(--hair-soft)}
+  .wrap{max-width:720px;margin:0 auto}
+
+  .eyebrow{
+    margin:0 0 20px;font-weight:600;font-size:12.5px;letter-spacing:0.28em;
+    text-transform:uppercase;color:var(--aqua);
+  }
+  h2.title{
+    margin:0;font-family:var(--serif);font-weight:500;
+    font-size:clamp(30px,4.6vw,46px);line-height:1.12;letter-spacing:.2px;color:#F4F9F9;
+  }
+  .sect-intro{margin:20px 0 0;font-size:clamp(17px,1.6vw,19px);line-height:1.75;color:var(--bone);opacity:.9;max-width:60ch}
+
+  .lead{
+    margin:0 0 1.1em;font-family:var(--serif);font-weight:500;
+    font-size:clamp(23px,3.4vw,34px);line-height:1.3;letter-spacing:.2px;color:#F4F9F9;
+  }
+  .prose{font-size:clamp(17px,1.5vw,19px);line-height:1.85;color:var(--bone);opacity:.92}
+  .prose p{margin:0 0 1.05em}
+  .prose p:last-child{margin-bottom:0}
+  .prose em{font-family:var(--serif);font-style:italic;font-weight:500;color:var(--aqua);font-size:1.05em}
+
+  /* A single writing / reflection entry */
+  .entry{margin-top:64px}
+  .entry:first-of-type{margin-top:40px}
+  .entry h3{
+    margin:0;font-family:var(--serif);font-weight:500;
+    font-size:clamp(23px,2.9vw,30px);line-height:1.2;letter-spacing:.2px;color:#F4F9F9;
+    display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+  }
+  .entry-date{
+    margin:9px 0 20px;font-size:12.5px;letter-spacing:0.18em;text-transform:uppercase;
+    color:var(--bone-dim);
+  }
+  .entry .prose{max-width:68ch}
+
+  /* Pull-quote reflection (the note + aphorisms) */
+  .quote{
+    margin:0;font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:clamp(21px,2.6vw,28px);line-height:1.45;color:#F4F9F9;
+    padding-left:22px;border-left:2px solid var(--accent-line);
+  }
+  .quote-cite{margin:16px 0 0;padding-left:22px;font-size:14.5px;color:var(--bone-dim);font-style:normal}
+  .aphorisms{margin-top:44px;display:flex;flex-direction:column;gap:38px}
+  .aphorism p{
+    margin:0;font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:clamp(19px,2.2vw,24px);line-height:1.5;color:#EEF6F6;
+    padding-left:22px;border-left:2px solid var(--hair);
+  }
+  .aphorism .entry-date{margin:12px 0 0;padding-left:22px}
+
+  /* heading anchor (# on hover) */
+  .hlink{
+    text-decoration:none;color:var(--aqua);opacity:0;font-weight:600;font-size:.62em;
+    border:0;transition:opacity .18s ease;transform:translateY(-1px);
+  }
+  h2.title:hover .hlink,.entry h3:hover .hlink,.hlink:focus{opacity:.85}
+  .hlink:hover{opacity:1}
+
+  /* ---------------- Footer ---------------------------------------------------- */
+  .foot-page{
+    position:relative;background:var(--ink);
+    padding:clamp(56px,10vh,96px) clamp(24px,6vw,88px) 44px;text-align:center;
     border-top:1px solid var(--hair);
     font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--bone-dim);
-    background:var(--ink);
   }
-  .foot a{color:var(--bone-dim);text-decoration:none}
-  .foot a:hover{color:var(--aqua)}
+  .foot-page a{color:var(--bone-dim);text-decoration:none}
+  .foot-page a:hover{color:var(--aqua)}
+  .signature{
+    margin:0;font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:clamp(22px,3vw,30px);line-height:1.1;letter-spacing:normal;text-transform:none;
+    color:var(--aqua);
+  }
+  .signature-mail{
+    margin:12px 0 0;letter-spacing:normal;text-transform:none;font-size:15px;
+  }
+  .signature-mail a{
+    color:var(--bone);border-bottom:1px solid var(--accent-line);padding-bottom:1px;
+    transition:color .2s ease,border-color .2s ease;
+  }
+  .signature-mail a:hover{color:var(--aqua);border-bottom-color:var(--aqua)}
+  .foot-url{margin:26px 0 0}
+
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+  /* ---------------- Narrow screens: nav collapses to a sticky top bar --------- */
+  @media (max-width:820px){
+    .nav{
+      position:sticky;top:0;left:0;width:100%;height:auto;flex-direction:row;align-items:center;gap:14px;
+      padding:10px 14px;border-right:none;border-bottom:1px solid var(--hair);
+    }
+    .brand{margin:0 6px 0 0}
+    .brand .tag{display:none}
+    .brand .mark{font-size:18px;letter-spacing:0.12em}
+    .menu{
+      flex-direction:row;gap:2px;padding:0;overflow-x:auto;overflow-y:hidden;
+      -webkit-overflow-scrolling:touch;scrollbar-width:none;
+    }
+    .menu::-webkit-scrollbar{display:none}
+    .nav-top > button{white-space:nowrap;padding:8px 12px;border-left:0;border-bottom:2px solid transparent;border-radius:7px}
+    .nav-top > button[aria-current]{border-left:0;border-bottom-color:var(--aqua);background:var(--accent-soft)}
+    .nav-sub{display:none}
+    .nav .foot{display:none}
+    .main{margin-left:0}
+    .sect{scroll-margin-top:calc(var(--topbar-h) + 12px)}
+    .sub{scroll-margin-top:calc(var(--topbar-h) + 12px)}
+  }
 
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto}
-    .hero-bg{animation:none;transform:scale(1.06)}
+    .page-bg{animation:none;transform:scale(1.06)}
     .scroll-cue{animation:none}
+    .nav-sub{transition:none}
   }
 </style>
 </head>
 <body>
-  <header class="hero">
-    <div class="hero-bg" aria-hidden="true"></div>
+<div class="page-bg" aria-hidden="true"></div>
+<a class="skip" href="#overview">Skip to content</a>
+
+<nav class="nav" aria-label="Primary">
+  <div class="brand">
+    <a class="mark" href="#overview">Dharma&nbsp;Jay</a>
+    <div class="tag"><em>Be now.</em> Reflections on presence, choice, and perception.</div>
+  </div>
+  <ul class="menu" id="menu"></ul>
+  <div class="foot"><a href="/">benow.us</a></div>
+</nav>
+
+<main class="main" id="main">
+
+  <!-- ============================ BE NOW (hero) ============================ -->
+  <section class="sect hero" id="overview" data-label="Be now" tabindex="-1">
     <div class="hero-scrim" aria-hidden="true"></div>
     <div class="hero-inner">
       <h1 class="name">Dharma&nbsp;Jay</h1>
       <p class="narrative"><span class="accent">Be now.</span> Remember the past, choose your future, be in the present. Now is the only time you have, and it is timeless.</p>
     </div>
+    <div class="hero-sign">
+      <p class="sig-name">— Dharma&nbsp;Jay</p>
+      <p class="sig-mail"><a href="mailto:dharmajay@benow.us">dharmajay@benow.us</a></p>
+    </div>
     <a class="scroll-cue" href="#about" aria-label="Read more">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </a>
-  </header>
+  </section>
 
-  <main>
-    <section id="about" class="about">
-      <div class="about-inner">
-        <p class="eyebrow">About the Author</p>
-        <p class="lead">An observer, facilitator and participant.</p>
+  <!-- ============================ ABOUT ============================ -->
+  <section class="sect band" id="about" data-label="About" tabindex="-1">
+    <div class="wrap">
+      <p class="eyebrow">About the Author</p>
+      <p class="lead">An observer, facilitator and participant.</p>
+      <div class="prose">
+        <p>The perception of life — <em>it is what you want it to be,</em> you just have to experience it. What follows are reflections gathered across the years: writing on presence, choice, and the simplicity beneath what we think we see.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ WRITINGS ============================ -->
+  <section class="sect band" id="writings" data-label="Writings" tabindex="-1">
+    <div class="wrap">
+      <p class="eyebrow">Writings</p>
+      <h2 class="title">Writings<a class="hlink" href="#writings" aria-label="Link to Writings">#</a></h2>
+      <p class="sect-intro">Essays and notes, newest first — a decade of thinking out loud about mind, choice, and the present.</p>
+
+      <article class="entry sub" id="w-imagination" data-label="Imagination is the Key">
+        <h3>Imagination is the Key<a class="hlink" href="#w-imagination" aria-label="Link to Imagination is the Key">#</a></h3>
+        <p class="entry-date">November 19, 2018</p>
         <div class="prose">
+          <p>&hellip; to unlocking true potential.</p>
           <p><em>Imagine&hellip;</em> if there are more dimensions to existence beyond what we can paint with our minds. If you could paint with more colors than what the 5-color sensory palette can offer. If you are in control of your choices, and what life unfolds before you is based on those choices. If we live in a reality where nothing is real, and everything is real. If the universe is infinite, there are no limits except for those that we choose to believe in. If we limit ourselves based on what questions we ask, what we look for, and by what answers we seek. If you can live a lifetime in every moment. If we are in heaven, nirvana, paradise. <em>Imagine&hellip;</em> if this is all true.</p>
         </div>
-      </div>
-    </section>
-  </main>
+      </article>
 
-  <footer class="foot"><a href="/">benow.us</a></footer>
+      <article class="entry sub" id="w-thought-health" data-label="Thought Health">
+        <h3>Thought Health<a class="hlink" href="#w-thought-health" aria-label="Link to Thought Health">#</a></h3>
+        <p class="entry-date">September 2, 2017</p>
+        <div class="prose">
+          <p>Don&rsquo;t like how you are feeling? Here&rsquo;s a thought. Choosing what you think changes how you think. Choosing how you think changes how you feel. Choosing how you feel impacts your health and impacts your ability to choose what you think.</p>
+          <p>The first step down the path of realizing positive change is through choosing how you react to your thoughts and the thoughts of others around you. Meditation can facilitate this transformation of thought and being.</p>
+        </div>
+      </article>
+
+      <article class="entry sub" id="w-right-choices" data-label="How to Make Right Choices">
+        <h3>How to Make Right Choices<a class="hlink" href="#w-right-choices" aria-label="Link to How to Make Right Choices">#</a></h3>
+        <p class="entry-date">March 30, 2011</p>
+        <div class="prose">
+          <p>We are only limited by belief. Our values are what guide us to discover the next step on our path to spiritual enlightenment. Believe in yourself and value your moments. Imagine the reality you want. It is in this place, in the present, when you&rsquo;ll see synchronicities that offer you the opportunity you seek.</p>
+        </div>
+      </article>
+
+      <article class="entry sub" id="w-overcomplicate" data-label="Is It Our Nature to Over-Complicate?">
+        <h3>Is It Our Nature to Learn to Over-Complicate?<a class="hlink" href="#w-overcomplicate" aria-label="Link to Is It Our Nature to Over-Complicate?">#</a></h3>
+        <p class="entry-date">December 28, 2010</p>
+        <div class="prose">
+          <p>Tonight my 7 year old daughter was telling me about the solar system. She told me how she understands that the sun is made up of light and gave me this detailed explanation of her perspective. Maybe she&rsquo;s on to something. Maybe my years of training in Physics were based on an old paradigm, not a too far cousin from those that once insisted that the world was flat, that the Earth was the center of the universe, the Earth was the center of the galaxy, the center of the solar system, and that Pluto was a planet. Maybe our perception of cause and effect are reversed? Maybe what we think we perceive isn&rsquo;t a reaction to our perception, but the cause of our perception? Perhaps the complexities we perceive are made up due to our learned perception, our thought training to over-complicate and rationalize, forcing us to choose to believe our delusions over the observation of the simplicity of life? Perhaps the light that shines on us is just that &hellip; Light. We are more than we perceive and understand, but perhaps not as much so to my daughter. I hope she continues to teach me. Perhaps this was timely, a synchronicity, since this is the time of year when we celebrate Light, and life, around the time when we have the shortest days of the year, at least in this hemisphere. There I go again, over complicating&hellip;</p>
+        </div>
+      </article>
+
+      <article class="entry sub" id="w-daily-cycle" data-label="Daily Cycle">
+        <h3>Daily Cycle<a class="hlink" href="#w-daily-cycle" aria-label="Link to Daily Cycle">#</a></h3>
+        <p class="entry-date">October 16, 2009</p>
+        <div class="prose">
+          <p>Every day we are reminded of how nature works. Sometimes we get caught up in automatic living where our perception shifts into reaction mode. We then see before us in hindsight and remember how we wanted the future. Choice exists in the moment. Now isn&rsquo;t a time, it&rsquo;s a space and a timelessness. It&rsquo;s where the real you exists. Nature sometimes places stop signs up before us that are at times subtle and not so. Sunsets offer a subtle stop sign. We can choose to do the rolling stop into the evening and miss out in the moment, or stop and contemplate on the what choices we&rsquo;ve made today and relive the moments that made us smile and laugh. If you choose happiness, why not choose to experience it as much as you can? We may not have all that we desire, but we can all take a moment to appreciate having breath, life, and the cognition to realize that we do have choices.</p>
+        </div>
+      </article>
+
+      <article class="entry sub" id="w-first-blog" data-label="My First Blog">
+        <h3>My First Blog<a class="hlink" href="#w-first-blog" aria-label="Link to My First Blog">#</a></h3>
+        <p class="entry-date">October 16, 2009</p>
+        <div class="prose">
+          <p>Today I decided to take a dive into the world of blogging. Now I need to determine what would be of interest to the world. I know, I&rsquo;ll be myself and express how I see the world. That should be interesting to some &hellip; maybe.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============================ REFLECTIONS ============================ -->
+  <section class="sect band" id="reflections" data-label="Reflections" tabindex="-1">
+    <div class="wrap">
+      <p class="eyebrow">Reflections</p>
+      <h2 class="title">Reflections<a class="hlink" href="#reflections" aria-label="Link to Reflections">#</a></h2>
+      <p class="sect-intro">Shorter notes shared along the way.</p>
+
+      <article class="entry sub" id="r-humanity" data-label="A Perspective on Humanity">
+        <h3>A Perspective on Humanity<a class="hlink" href="#r-humanity" aria-label="Link to A Perspective on Humanity">#</a></h3>
+        <p class="entry-date">July 30, 2011</p>
+        <blockquote class="quote">Man. Because he sacrifices his health in order to make money. Then he sacrifices money to recuperate his health. And then he is so anxious about the future that he does not enjoy the present; the result being that he does not live in the present or the future; he lives as if he is never going to die, and then dies having never really lived.</blockquote>
+        <p class="quote-cite">— the Dalai Lama, on what surprised him most about humanity</p>
+      </article>
+
+      <div class="entry sub" id="r-aphorisms" data-label="Aphorisms">
+        <h3>Aphorisms<a class="hlink" href="#r-aphorisms" aria-label="Link to Aphorisms">#</a></h3>
+        <div class="aphorisms">
+          <div class="aphorism">
+            <p>If you want to improve your skill in empathy, endeavor to understand the perception you create in others by what you say and do.</p>
+            <p class="entry-date">February 5, 2017</p>
+          </div>
+          <div class="aphorism">
+            <p>Knowledge is believing that you understand something. Wisdom is understanding when not to believe what you know.</p>
+            <p class="entry-date">July 15, 2016</p>
+          </div>
+          <div class="aphorism">
+            <p>To be in the present one must be as one does. If one does without being then one is remembering life and not living it.</p>
+            <p class="entry-date">November 12, 2015</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot-page">
+    <p class="signature">— Dharma&nbsp;Jay</p>
+    <p class="signature-mail"><a href="mailto:dharmajay@benow.us">dharmajay@benow.us</a></p>
+    <p class="foot-url"><a href="/">benow.us</a></p>
+  </footer>
+</main>
+
+<p class="sr-only" id="live" aria-live="polite"></p>
+
+<script>
+"use strict";
+(function(){
+  /* Data-driven two-level nav + scrollspy (after jason.epel.us).
+     Top-level = <section class="sect" data-label>; sub items = .sub[data-label] within. */
+  const menuEl = document.getElementById("menu");
+  const liveEl = document.getElementById("live");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const isNarrow = () => window.matchMedia("(max-width:820px)").matches;
+
+  const tops = Array.from(document.querySelectorAll(".main > section.sect"));
+  const model = tops.map(t => ({
+    id: t.id, label: t.dataset.label || t.id, el: t,
+    subs: Array.from(t.querySelectorAll(".sub")).map(s => ({
+      id: s.id, label: s.dataset.label || s.id, el: s
+    }))
+  }));
+
+  const spy = [];
+  model.forEach(top => {
+    spy.push({ id: top.id, el: top.el, topId: top.id, subId: null });
+    top.subs.forEach(sub => spy.push({ id: sub.id, el: sub.el, topId: top.id, subId: sub.id }));
+  });
+
+  const btnByTarget = {};
+
+  function buildMenu(){
+    menuEl.innerHTML = "";
+    model.forEach(top => {
+      const li = document.createElement("li");
+      li.className = "nav-top";
+      li.dataset.top = top.id;
+
+      const b = document.createElement("button");
+      b.type = "button";
+      b.textContent = top.label;
+      b.addEventListener("click", () => go(top.id));
+      btnByTarget[top.id] = b;
+      li.appendChild(b);
+
+      if(top.subs.length){
+        const ul = document.createElement("ul");
+        ul.className = "nav-sub";
+        top.subs.forEach(sub => {
+          const sli = document.createElement("li");
+          const sb = document.createElement("button");
+          sb.type = "button";
+          sb.textContent = sub.label;
+          sb.addEventListener("click", () => go(sub.id));
+          btnByTarget[sub.id] = sb;
+          sli.appendChild(sb);
+          ul.appendChild(sli);
+        });
+        li.appendChild(ul);
+      }
+      menuEl.appendChild(li);
+    });
+  }
+
+  let activeId = null;
+  function activeLine(){ return isNarrow() ? 84 : 132; }
+
+  function computeActive(){
+    const line = activeLine();
+    let cur = spy[0];
+    for(const s of spy){
+      if(s.el.getBoundingClientRect().top <= line) cur = s;
+      else break;
+    }
+    return cur;
+  }
+
+  function labelOf(id){
+    for(const t of model){ if(t.id===id) return t.label;
+      for(const s of t.subs){ if(s.id===id) return s.label; } }
+    return id;
+  }
+
+  function setActive(cur, updateHash){
+    if(cur.id === activeId) return;
+    activeId = cur.id;
+
+    Object.values(btnByTarget).forEach(b => b.removeAttribute("aria-current"));
+    if(btnByTarget[cur.topId]) btnByTarget[cur.topId].setAttribute("aria-current","true");
+    if(cur.subId && btnByTarget[cur.subId]) btnByTarget[cur.subId].setAttribute("aria-current","true");
+
+    Array.from(menuEl.querySelectorAll(".nav-top")).forEach(li => {
+      li.classList.toggle("expanded", li.dataset.top === cur.topId);
+    });
+
+    const ab = btnByTarget[cur.subId || cur.topId];
+    if(ab){
+      const r = ab.getBoundingClientRect(), pr = menuEl.getBoundingClientRect();
+      if(r.top < pr.top || r.bottom > pr.bottom || r.left < pr.left || r.right > pr.right){
+        ab.scrollIntoView({block:"nearest", inline:"nearest"});
+      }
+    }
+
+    liveEl.textContent = "Section: " + (cur.subId
+      ? (labelOf(cur.topId) + " — " + labelOf(cur.subId))
+      : labelOf(cur.topId));
+
+    if(updateHash){
+      const h = "#" + cur.id;
+      if(location.hash !== h) history.replaceState(null, "", h);
+    }
+  }
+
+  let ticking = false;
+  function onScroll(){
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      setActive(computeActive(), true);
+      ticking = false;
+    });
+  }
+
+  function offsetTop(){ return isNarrow() ? (60 + 12) : 28; }
+  function scrollToId(id, push){
+    const el = document.getElementById(id);
+    if(!el) return;
+    const y = el.getBoundingClientRect().top + window.pageYOffset - offsetTop();
+    window.scrollTo({ top: y, behavior: reduceMotion ? "auto" : "smooth" });
+    if(push){
+      const h = "#" + id;
+      if(location.hash !== h) history.pushState(null, "", h);
+    }
+    const target = el.hasAttribute("tabindex") ? el : el.querySelector("h1,h2,h3") || el;
+    if(target){
+      target.setAttribute("tabindex", target.hasAttribute("tabindex") ? target.getAttribute("tabindex") : "-1");
+      try{ target.focus({preventScroll:true}); }catch(e){}
+    }
+  }
+
+  function go(id){ scrollToId(id, true); }
+
+  function wireAnchors(){
+    Array.from(document.querySelectorAll("a.hlink")).forEach(a => {
+      a.addEventListener("click", e => {
+        e.preventDefault();
+        const id = a.getAttribute("href").slice(1);
+        scrollToId(id, true);
+        const url = location.origin + location.pathname + "#" + id;
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(url).then(() => { liveEl.textContent = "Link copied"; }, () => {});
+        }
+      });
+    });
+  }
+
+  window.addEventListener("popstate", () => {
+    const id = (location.hash || "").replace(/^#/, "");
+    if(id && document.getElementById(id)) scrollToId(id, false);
+  });
+
+  document.querySelector(".brand .mark").addEventListener("click", e => {
+    e.preventDefault(); go("overview");
+  });
+  document.querySelector(".skip").addEventListener("click", e => {
+    e.preventDefault(); go("overview");
+  });
+
+  function boot(){
+    buildMenu();
+    wireAnchors();
+    window.addEventListener("scroll", onScroll, { passive:true });
+    window.addEventListener("resize", onScroll, { passive:true });
+
+    const initial = (location.hash || "").replace(/^#/, "");
+    if(initial && document.getElementById(initial)){
+      requestAnimationFrame(() => { scrollToId(initial, false); setActive(computeActive(), false); });
+    } else {
+      setActive(computeActive(), false);
+    }
+  }
+  boot();
+})();
+</script>
 </body>
 </html>
